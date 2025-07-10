@@ -4,17 +4,17 @@ import { router } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function IndexScreen() {
-  const { user, loading } = useAuth();
+  const { user, token, loading } = useAuth();
 
   useEffect(() => {
     if (!loading) {
-      if (user) {
+      if (user && token) {
         router.replace('/(tabs)');
       } else {
         router.replace('/login');
       }
     }
-  }, [user, loading]);
+  }, [user,loading]);
 
   if (loading) {
     return (

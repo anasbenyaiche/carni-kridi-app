@@ -2,106 +2,18 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
-  TouchableOpacity,
   StyleSheet,
-  Alert,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
-import { router } from 'expo-router';
-import { clientService } from '../../services/clientService';
-import { kridiService } from '../../services/kridiService';
-import { UserPlus, CreditCard, Save } from 'lucide-react-native';
+import { UserPlus, CreditCard } from 'lucide-react-native';
+import AddClientForm from '../../components/AddClientForm';
+import AddKridiForm from '../../components/AddKridiForm';
 
 export default function AddScreen() {
   const [activeTab, setActiveTab] = useState<'client' | 'kridi'>('client');
-  const [loading, setLoading] = useState(false);
-
-  // Client form state
-  const [clientForm, setClientForm] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    address: '',
-    creditLimit: '500',
-    notes: '',
-  });
-
-  // Kridi form state
-  const [kridiForm, setKridiForm] = useState({
-    clientId: '',
-    amount: '',
-    reason: '',
-    type: 'debt' as 'debt' | 'payment',
-  });
-
-  const handleAddClient = async () => {
-    if (!clientForm.name || !clientForm.phone) {
-      Alert.alert('Erreur', 'Nom et téléphone sont requis');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const clientData = {
-        ...clientForm,
-        creditLimit: parseFloat(clientForm.creditLimit) || 500,
-      };
-
-      await clientService.createClient(clientData);
-      Alert.alert('Succès', 'Client ajouté avec succès');
-      
-      // Reset form
-      setClientForm({
-        name: '',
-        phone: '',
-        email: '',
-        address: '',
-        creditLimit: '500',
-        notes: '',
-      });
-      
-      router.push('/clients');
-    } catch (error: any) {
-      Alert.alert('Erreur', error.message || 'Erreur lors de l\'ajout du client');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAddKridi = async () => {
-    if (!kridiForm.clientId || !kridiForm.amount || !kridiForm.reason) {
-      Alert.alert('Erreur', 'Tous les champs sont requis');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const kridiData = {
-        ...kridiForm,
-        amount: parseFloat(kridiForm.amount),
-      };
-
-      await kridiService.addKridiEntry(kridiData);
-      Alert.alert('Succès', 'Entrée ajoutée avec succès');
-      
-      // Reset form
-      setKridiForm({
-        clientId: '',
-        amount: '',
-        reason: '',
-        type: 'debt',
-      });
-      
-      router.push('/');
-    } catch (error: any) {
-      Alert.alert('Erreur', error.message || 'Erreur lors de l\'ajout de l\'entrée');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <KeyboardAvoidingView 
@@ -136,150 +48,9 @@ export default function AddScreen() {
 
       <ScrollView style={styles.content}>
         {activeTab === 'client' ? (
-          <View style={styles.form}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Nom *</Text>
-              <TextInput
-                style={styles.input}
-                value={clientForm.name}
-                onChangeText={(text) => setClientForm({...clientForm, name: text})}
-                placeholder="Nom du client"
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Téléphone *</Text>
-              <TextInput
-                style={styles.input}
-                value={clientForm.phone}
-                onChangeText={(text) => setClientForm({...clientForm, phone: text})}
-                placeholder="+216 XX XXX XXX"
-                keyboardType="phone-pad"
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.input}
-                value={clientForm.email}
-                onChangeText={(text) => setClientForm({...clientForm, email: text})}
-                placeholder="email@exemple.com"
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Adresse</Text>
-              <TextInput
-                style={styles.input}
-                value={clientForm.address}
-                onChangeText={(text) => setClientForm({...clientForm, address: text})}
-                placeholder="Adresse du client"
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Limite de crédit (TND)</Text>
-              <TextInput
-                style={styles.input}
-                value={clientForm.creditLimit}
-                onChangeText={(text) => setClientForm({...clientForm, creditLimit: text})}
-                placeholder="500"
-                keyboardType="numeric"
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Notes</Text>
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                value={clientForm.notes}
-                onChangeText={(text) => setClientForm({...clientForm, notes: text})}
-                placeholder="Notes sur le client..."
-                multiline
-                numberOfLines={3}
-              />
-            </View>
-
-            <TouchableOpacity
-              style={[styles.submitButton, loading && styles.disabledButton]}
-              onPress={handleAddClient}
-              disabled={loading}
-            >
-              <Save size={20} color="#FFFFFF" />
-              <Text style={styles.submitButtonText}>
-                {loading ? 'Ajout en cours...' : 'Ajouter Client'}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <AddClientForm styles={styles} />
         ) : (
-          <View style={styles.form}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>ID Client *</Text>
-              <TextInput
-                style={styles.input}
-                value={kridiForm.clientId}
-                onChangeText={(text) => setKridiForm({...kridiForm, clientId: text})}
-                placeholder="ID du client"
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Montant (TND) *</Text>
-              <TextInput
-                style={styles.input}
-                value={kridiForm.amount}
-                onChangeText={(text) => setKridiForm({...kridiForm, amount: text})}
-                placeholder="0.00"
-                keyboardType="numeric"
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Raison *</Text>
-              <TextInput
-                style={styles.input}
-                value={kridiForm.reason}
-                onChangeText={(text) => setKridiForm({...kridiForm, reason: text})}
-                placeholder="Produits alimentaires, paiement, etc."
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Type *</Text>
-              <View style={styles.radioGroup}>
-                <TouchableOpacity
-                  style={[styles.radioButton, kridiForm.type === 'debt' && styles.radioButtonActive]}
-                  onPress={() => setKridiForm({...kridiForm, type: 'debt'})}
-                >
-                  <Text style={[styles.radioText, kridiForm.type === 'debt' && styles.radioTextActive]}>
-                    Dette
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.radioButton, kridiForm.type === 'payment' && styles.radioButtonActive]}
-                  onPress={() => setKridiForm({...kridiForm, type: 'payment'})}
-                >
-                  <Text style={[styles.radioText, kridiForm.type === 'payment' && styles.radioTextActive]}>
-                    Paiement
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <TouchableOpacity
-              style={[styles.submitButton, loading && styles.disabledButton]}
-              onPress={handleAddKridi}
-              disabled={loading}
-            >
-              <Save size={20} color="#FFFFFF" />
-              <Text style={styles.submitButtonText}>
-                {loading ? 'Ajout en cours...' : 'Ajouter Kridi'}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <AddKridiForm styles={styles} />
         )}
       </ScrollView>
     </KeyboardAvoidingView>

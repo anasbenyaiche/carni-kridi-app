@@ -12,6 +12,7 @@ import {
 import { router } from 'expo-router';
 import { clientService, Client } from '../../services/clientService';
 import { Search, Plus, Phone, User } from 'lucide-react-native';
+import ClientDetailsCard from '../../components/ClientDetailsCard';
 
 export default function ClientsScreen() {
   const [clients, setClients] = useState<Client[]>([]);
@@ -66,36 +67,11 @@ export default function ClientsScreen() {
   };
 
   const renderClient = ({ item }: { item: Client }) => (
-    <TouchableOpacity 
-      style={styles.clientCard}
-      onPress={() => handleClientPress(item)}
-    >
-      <View style={styles.clientHeader}>
-        <View style={styles.clientInfo}>
-          <Text style={styles.clientName}>{item.name}</Text>
-          <View style={styles.clientDetails}>
-            <Phone size={14} color="#6B7280" />
-            <Text style={styles.clientPhone}>{item.phone}</Text>
-          </View>
-        </View>
-        <View style={styles.clientBalance}>
-          <Text style={[
-            styles.balanceText,
-            (item.totalDebt - item.totalPaid) > 0 ? styles.debtText : styles.paidText
-          ]}>
-            {formatCurrency(item.totalDebt - item.totalPaid)}
-          </Text>
-          <Text style={styles.balanceLabel}>
-            {(item.totalDebt - item.totalPaid) > 0 ? 'À payer' : 'Soldé'}
-          </Text>
-        </View>
-      </View>
-      {item.lastTransaction && (
-        <Text style={styles.lastTransaction}>
-          Dernière transaction: {new Date(item.lastTransaction).toLocaleDateString()}
-        </Text>
-      )}
-    </TouchableOpacity>
+    <ClientDetailsCard
+      client={item}
+      onPress={handleClientPress}
+      formatCurrency={formatCurrency}
+    />
   );
 
   return (
