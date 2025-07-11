@@ -80,7 +80,7 @@ export default function ClientsScreen() {
         <Text style={styles.title}>Clients</Text>
         <TouchableOpacity 
           style={styles.addButton}
-          onPress={() => router.push('/add-client')}
+          onPress={() => router.push('/add')}
         >
           <Plus size={20} color="#FFFFFF" />
         </TouchableOpacity>

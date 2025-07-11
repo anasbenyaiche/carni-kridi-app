@@ -1,7 +1,10 @@
 import { Tabs } from 'expo-router';
 import { Chrome as Home, Users, CirclePlus as PlusCircle, ChartBar as BarChart3, Settings } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tabs
       screenOptions={{
@@ -12,11 +15,12 @@ export default function TabLayout() {
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
           borderTopColor: '#E5E7EB',
-          paddingBottom: 5,
           paddingTop: 5,
-          height: 60,
+          paddingBottom: insets.bottom + 5, // 👈 Safe padding
+          height: 60 + insets.bottom,       // 👈 Adjust height too
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
