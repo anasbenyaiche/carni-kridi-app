@@ -59,6 +59,10 @@ export default function HomeScreen() {
     return `${amount.toFixed(2)} TND`;
   };
 
+  const handleClientPress = (client: any) => {
+    router.push(`/client/${client._id}`);
+  };
+
   if (loading) {
     return (
       <View style={globalStyles.loadingContainer}>
@@ -78,7 +82,11 @@ export default function HomeScreen() {
     content = (
       <>
         <StatsSection summary={summary} formatCurrency={formatCurrency} />
-        <RecentClientsSection recentClients={recentClients} formatCurrency={formatCurrency} />
+        <RecentClientsSection
+          recentClients={recentClients}
+          formatCurrency={formatCurrency}
+          onClientPress={handleClientPress}
+        />
       </>
     );
   } else if (user?.role === 'client') {
