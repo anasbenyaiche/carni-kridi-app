@@ -2,8 +2,10 @@ import { useEffect } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider, useAuth } from '../contexts/AuthContext'; // Make sure path is correct
+import { LoadingProvider } from '../contexts/LoadingContext';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 // This is the "Gatekeeper" component. It will handle redirection.
 const AuthGate = () => {
@@ -44,6 +46,8 @@ const AuthGate = () => {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="client" />
+      <Stack.Screen name="admin" />
       <Stack.Screen name="login" />
       <Stack.Screen name="register" />
       <Stack.Screen name="+not-found" />
@@ -58,10 +62,13 @@ export default function RootLayout() {
    useFrameworkReady(); 
 
   return (
-    <AuthProvider>
-      <AuthGate />
-      <StatusBar style="auto" />
-    </AuthProvider>
+    <LoadingProvider>
+      <AuthProvider>
+        <AuthGate />
+        <LoadingOverlay />
+        <StatusBar style="auto" />
+      </AuthProvider>
+    </LoadingProvider>
   );
 }
 
