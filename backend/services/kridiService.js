@@ -90,23 +90,23 @@ class KridiService extends BaseService {
       {
         $group: {
           _id: '$type',
-          totalAmount: { $sum: '$amount' },
-          remainingAmount: { $sum: '$remainingAmount' },
+          total: { $sum: '$amount' },
+          remaining: { $sum: '$remainingAmount' },
           count: { $sum: 1 },
         },
       },
     ]);
 
-    const debtSummary = summary.find(s => s._id === 'debt') || { totalAmount: 0, remainingAmount: 0, count: 0 };
-    const paymentSummary = summary.find(s => s._id === 'payment') || { totalAmount: 0, remainingAmount: 0, count: 0 };
+    const clientCount = await Client.countDocuments({ storeId });
+    const activeClients = await Client.countDocuments({ 
+      storeId, 
+      lastTransaction: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } 
+    });
 
     return {
-      totalDebt: debtSummary.totalAmount,
-      totalPaid: paymentSummary.totalAmount,
-      outstandingDebt: debtSummary.remainingAmount,
-      totalTransactions: debtSummary.count + paymentSummary.count,
-      debtTransactions: debtSummary.count,
-      paymentTransactions: paymentSummary.count,
+      summary,
+      clientCount,
+      activeClients,
     };
   }
 
