@@ -1,177 +1,93 @@
-const Client = require('../models/Client');
-const KridiEntry = require('../models/KridiEntry');
+const BaseController = require('./BaseController');
+const clientService = require('../services/clientService');
+const { validationResult } = require('express-validator');
 
-// Get all clients for a store, with computed debt/paid
-exports.getClients = async (req, res) => {
-  try {
-    const { page = 1, limit = 20, search = '' } = req.query;
-    const storeId = req.user.storeId;
+class ClientController extends BaseController {
+  async getClients(req, res) {
+    try {
+      const { page, limit } = this.extractPaginationParams(req.query);
+      const { search } = this.extractSearchParams(req.query);
+      const storeId = req.user.storeId;
 
-    const query = { storeId };
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { phone: { $regex: search, $options: 'i' } },
-      ];
+      const result = await clientService.getClientsByStore(storeId, { page, limit, search });
+      this.handleSuccess(res, result);
+    } catch (error) {
+      this.handleError(res, error);
     }
-
-    const clients = await Client.find(query)
-      .sort({ lastTransaction: -1, name: 1 })
-      .limit(limit * 1)
-      .skip((page - 1) * limit);
-
-    const total = await Client.countDocuments(query);
-
-    const clientsWithBalance = await Promise.all(clients.map(async (client) => {
-      const totalDebtAgg = await KridiEntry.aggregate([
-        { $match: { clientId: client._id, type: 'debt' } },
-        { $group: { _id: null, total: { $sum: '$remainingAmount' } } },
-      ]);
-      const totalPaidAgg = await KridiEntry.aggregate([
-        { $match: { clientId: client._id, type: 'payment' } },
-        { $group: { _id: null, total: { $sum: '$amount' } } },
-      ]);
-      const totalDebt = totalDebtAgg[0]?.total || 0;
-      const totalPaid = totalPaidAgg[0]?.total || 0;
-      const currentBalance = totalDebt - totalPaid;
-
-      return {
-        ...client.toObject(),
-        totalDebt,
-        totalPaid,
-        currentBalance,
-      };
-    }));
-
-    res.json({
-      clients: clientsWithBalance,
-      total,
-      page: parseInt(page),
-      pages: Math.ceil(total / limit),
-    });
-  } catch (error) {
-    console.error('Get clients error:', error);
-    res.status(500).json({ error: 'Failed to get clients' });
   }
-};
 
-// Get single client with summary
-exports.getClientById = async (req, res) => {
-  try {
-    const client = await Client.findById(req.params.id);
-    if (!client || client.storeId.toString() !== req.user.storeId.toString()) {
-      return res.status(404).json({ error: 'Client not found' });
+  async getClient(req, res) {
+    try {
+      const { id } = req.params;
+      const storeId = req.user.storeId;
+
+      const result = await clientService.getClientWithBalance(id, storeId);
+      
+      if (!result) {
+        return this.handleNotFound(res, 'Client not found');
+      }
+
+      this.handleSuccess(res, result);
+    } catch (error) {
+      this.handleError(res, error);
     }
-
-    const recentTransactions = await KridiEntry.find({ clientId: client._id })
-      .sort({ createdAt: -1 })
-      .limit(10)
-      .populate('createdBy', 'name');
-
-    const totalDebt = await KridiEntry.aggregate([
-      { $match: { clientId: client._id, type: 'debt' } },
-      { $group: { _id: null, total: { $sum: '$remainingAmount' } } },
-    ]);
-    const totalPaid = await KridiEntry.aggregate([
-      { $match: { clientId: client._id, type: 'payment' } },
-      { $group: { _id: null, total: { $sum: '$amount' } } },
-    ]);
-    const balance = {
-      totalDebt: totalDebt[0]?.total || 0,
-      totalPaid: totalPaid[0]?.total || 0,
-      currentBalance: (totalDebt[0]?.total || 0) - (totalPaid[0]?.total || 0),
-    };
-
-    res.json({
-      client,
-      balance,
-      recentTransactions,
-    });
-  } catch (error) {
-    console.error('Get client error:', error);
-    res.status(500).json({ error: 'Failed to get client' });
   }
-};
 
-// Create new client
-exports.createClient = async (req, res) => {
-  try {
-    const { name, phone, email, address, creditLimit, notes } = req.body;
+  async createClient(req, res) {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return this.handleBadRequest(res, { errors: errors.array() });
+      }
 
-    const existingClient = await Client.findOne({ 
-      phone, 
-      storeId: req.user.storeId 
-    });
-    if (existingClient) {
-      return res.status(400).json({ error: 'Client already exists in this store' });
+      const storeId = req.user.storeId;
+      const client = await clientService.createClient(req.body, storeId);
+      
+      this.handleSuccess(res, client, 201);
+    } catch (error) {
+      if (error.message === 'Client already exists in this store') {
+        return this.handleBadRequest(res, error.message);
+      }
+      this.handleError(res, error);
     }
-
-    const client = new Client({
-      name,
-      phone,
-      email,
-      address,
-      creditLimit,
-      notes,
-      storeId: req.user.storeId,
-    });
-
-    await client.save();
-    res.status(201).json(client);
-  } catch (error) {
-    console.error('Create client error:', error);
-    res.status(500).json({ error: 'Failed to create client' });
   }
-};
 
-// Update client
-exports.updateClient = async (req, res) => {
-  try {
-    const client = await Client.findById(req.params.id);
-    if (!client || client.storeId.toString() !== req.user.storeId.toString()) {
-      return res.status(404).json({ error: 'Client not found' });
+  async updateClient(req, res) {
+    try {
+      const { id } = req.params;
+      const storeId = req.user.storeId;
+
+      const client = await clientService.updateClient(id, req.body, storeId);
+      
+      if (!client) {
+        return this.handleNotFound(res, 'Client not found');
+      }
+
+      this.handleSuccess(res, client);
+    } catch (error) {
+      this.handleError(res, error);
     }
-
-    const { name, phone, email, address, creditLimit, notes } = req.body;
-
-    Object.assign(client, {
-      name: name || client.name,
-      phone: phone || client.phone,
-      email: email || client.email,
-      address: address || client.address,
-      creditLimit: creditLimit || client.creditLimit,
-      notes: notes || client.notes,
-    });
-
-    await client.save();
-    res.json(client);
-  } catch (error) {
-    console.error('Update client error:', error);
-    res.status(500).json({ error: 'Failed to update client' });
   }
-};
 
-// Delete client
-exports.deleteClient = async (req, res) => {
-  try {
-    const client = await Client.findById(req.params.id);
-    if (!client || client.storeId.toString() !== req.user.storeId.toString()) {
-      return res.status(404).json({ error: 'Client not found' });
+  async deleteClient(req, res) {
+    try {
+      const { id } = req.params;
+      const storeId = req.user.storeId;
+
+      const result = await clientService.deleteClient(id, storeId);
+      
+      if (!result) {
+        return this.handleNotFound(res, 'Client not found');
+      }
+
+      this.handleSuccess(res, { message: 'Client deleted successfully' });
+    } catch (error) {
+      if (error.message === 'Cannot delete client with outstanding debt') {
+        return this.handleBadRequest(res, error.message);
+      }
+      this.handleError(res, error);
     }
-
-    const outstandingDebt = await KridiEntry.aggregate([
-      { $match: { clientId: client._id, status: { $ne: 'paid' } } },
-      { $group: { _id: null, total: { $sum: '$remainingAmount' } } },
-    ]);
-
-    if (outstandingDebt[0]?.total > 0) {
-      return res.status(400).json({ error: 'Cannot delete client with outstanding debt' });
-    }
-
-    await Client.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Client deleted successfully' });
-  } catch (error) {
-    console.error('Delete client error:', error);
-    res.status(500).json({ error: 'Failed to delete client' });
   }
-};
+}
+
+module.exports = new ClientController();
