@@ -33,3 +33,7 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# test files
+backend/test-architecture.js
+services/test-services.ts
