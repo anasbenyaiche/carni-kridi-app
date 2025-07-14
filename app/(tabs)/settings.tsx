@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, Switch, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
+import { router } from 'expo-router';
 import ConfirmModal from '../../components/ConfirmModal';
-import AddStoreForm from '../../components/AddStoreForm';
 import AddEmployerForm from '../../components/AddEmployerForm';
-import { Store, Users } from 'lucide-react-native';
+import { Users, Shield, UserCheck } from 'lucide-react-native';
 
 export default function SettingsScreen() {
   const { user, logout } = useAuth();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [showStoreModal, setShowStoreModal] = useState(false);
   const [showWorkerModal, setShowWorkerModal] = useState(false);
 
   const handleLogout = async () => {
@@ -21,13 +20,10 @@ export default function SettingsScreen() {
     await logout();
   };
 
-  // Replace with your actual logic to add store/worker
-  const handleAddStore = (data: { name: string; address: string }) => {
-    // TODO: Call your API or logic here
-  };
-
+  // Handle adding worker
   const handleAddWorker = (data: { name: string; phone: string }) => {
     // TODO: Call your API or logic here
+    console.log('Adding worker:', data);
   };
 
   return (
@@ -42,23 +38,34 @@ export default function SettingsScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Profil</Text>
           <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
+            <UserCheck size={20} color="#fff" style={{ marginRight: 8 }} />
             <Text style={styles.actionButtonText}>Modifier le profil</Text>
           </TouchableOpacity>
           <View style={styles.spacer} />
           <TouchableOpacity style={styles.actionButton} onPress={() => {}}>
+            <Shield size={20} color="#fff" style={{ marginRight: 8 }} />
             <Text style={styles.actionButtonText}>Changer le mot de passe</Text>
           </TouchableOpacity>
         </View>
 
+        {/* Admin/Attara specific actions */}
+        {user?.role === 'admin' && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Administration</Text>
+            <TouchableOpacity 
+              style={styles.actionButton} 
+              onPress={() => router.push('/admin')}
+            >
+              <Shield size={20} color="#fff" style={{ marginRight: 8 }} />
+              <Text style={styles.actionButtonText}>Interface Admin</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* Attara-specific actions */}
         {user?.role === 'attara' && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Gestion du magasin</Text>
-            <TouchableOpacity style={styles.actionButton} onPress={() => setShowStoreModal(true)}>
-              <Store size={20} color="#fff" style={{ marginRight: 8 }} />
-              <Text style={styles.actionButtonText}>Ajouter un magasin</Text>
-            </TouchableOpacity>
-            <View style={styles.spacer} />
+            <Text style={styles.sectionTitle}>Gestion des employés</Text>
             <TouchableOpacity style={styles.actionButton} onPress={() => setShowWorkerModal(true)}>
               <Users size={20} color="#fff" style={{ marginRight: 8 }} />
               <Text style={styles.actionButtonText}>Ajouter un employé</Text>
@@ -78,7 +85,7 @@ export default function SettingsScreen() {
         {/* Account */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Compte</Text>
-          <TouchableOpacity style={styles.actionButton} onPress={handleLogout}>
+          <TouchableOpacity style={[styles.actionButton, styles.logoutButton]} onPress={handleLogout}>
             <Text style={styles.actionButtonText}>Se déconnecter</Text>
           </TouchableOpacity>
         </View>
@@ -87,8 +94,10 @@ export default function SettingsScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>À propos</Text>
           <Text style={styles.aboutText}>Version 1.0.0</Text>
+          <Text style={styles.aboutSubtext}>Carni Kridi - Gestion des crédits</Text>
         </View>
       </ScrollView>
+      
       <ConfirmModal
         visible={showLogoutModal}
         title="Déconnexion"
@@ -98,11 +107,7 @@ export default function SettingsScreen() {
         onConfirm={confirmLogout}
         onCancel={() => setShowLogoutModal(false)}
       />
-      <AddStoreForm
-        visible={showStoreModal}
-        onClose={() => setShowStoreModal(false)}
-        onSubmit={handleAddStore}
-      />
+      
       <AddEmployerForm
         visible={showWorkerModal}
         onClose={() => setShowWorkerModal(false)}
@@ -187,9 +192,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
+  logoutButton: {
+    backgroundColor: '#EF4444',
+  },
   actionButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  aboutSubtext: {
+    fontSize: 14,
+    color: '#9CA3AF',
+    marginTop: 4,
   },
 });

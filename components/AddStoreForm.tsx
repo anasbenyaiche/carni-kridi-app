@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { storeService, CreateStoreData } from '../services/storeService';
+import { useLoading } from '../contexts/LoadingContext';
 
 export default function AddStoreForm({
   visible,
@@ -8,27 +10,66 @@ export default function AddStoreForm({
 }: {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (data: { name: string; address: string }) => void;
+  onSubmit?: (store: any) => void;
 }) {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
+  const [phone, setPhone] = useState('');
+  const { showLoading, hideLoading, setLoadingMessage } = useLoading();
 
-  const handleSubmit = () => {
-    if (!name.trim()) return;
-    onSubmit({ name, address });
+  const handleSubmit = async () => {
+    if (!name.trim()) {
+      Alert.alert('Erreur', 'Le nom du magasin est requis');
+      return;
+    }
+
+    try {
+      showLoading();
+      setLoadingMessage('Création du magasin...');
+
+      const storeData: CreateStoreData = {
+        name: name.trim(),
+        address: address.trim(),
+        phone: phone.trim(),
+      };
+
+      const newStore = await storeService.createStore(storeData);
+      
+      // Reset form
+      setName('');
+      setAddress('');
+      setPhone('');
+      onClose();
+      
+      if (onSubmit) {
+        onSubmit(newStore);
+      }
+      
+      Alert.alert('Succès', 'Magasin créé avec succès!');
+    } catch (error: any) {
+      console.error('Error creating store:', error);
+      Alert.alert('Erreur', error.message || 'Impossible de créer le magasin');
+    } finally {
+      hideLoading();
+      setLoadingMessage(undefined);
+    }
+  };
+
+  const handleClose = () => {
     setName('');
     setAddress('');
+    setPhone('');
     onClose();
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={handleClose}>
       <View style={modalStyles.overlay}>
         <View style={modalStyles.modal}>
           <Text style={modalStyles.title}>Ajouter un magasin</Text>
           <TextInput
             style={modalStyles.input}
-            placeholder="Nom du magasin"
+            placeholder="Nom du magasin *"
             value={name}
             onChangeText={setName}
           />
@@ -37,9 +78,17 @@ export default function AddStoreForm({
             placeholder="Adresse"
             value={address}
             onChangeText={setAddress}
+            multiline
+          />
+          <TextInput
+            style={modalStyles.input}
+            placeholder="Téléphone"
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="phone-pad"
           />
           <View style={modalStyles.actions}>
-            <TouchableOpacity style={modalStyles.cancelButton} onPress={onClose}>
+            <TouchableOpacity style={modalStyles.cancelButton} onPress={handleClose}>
               <Text style={modalStyles.cancelText}>Annuler</Text>
             </TouchableOpacity>
             <TouchableOpacity style={modalStyles.confirmButton} onPress={handleSubmit}>

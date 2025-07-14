@@ -1,9 +1,14 @@
 import { Tabs } from 'expo-router';
-import { Chrome as Home, Users, CirclePlus as PlusCircle, ChartBar as BarChart3, Settings } from 'lucide-react-native';
+import { Chrome as Home, Users, CirclePlus as PlusCircle, ChartBar as BarChart3, Settings, Store } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
+
+  // Show stores tab only for admin and attara users
+  const showStoresTab = user && (user.role === 'admin' || user.role === 'attara');
 
   return (
     <Tabs
@@ -48,6 +53,17 @@ export default function TabLayout() {
           ),
         }}
       />
+      {showStoresTab && (
+        <Tabs.Screen
+          name="stores"
+          options={{
+            title: 'Magasins',
+            tabBarIcon: ({ size, color }) => (
+              <Store size={size} color={color} />
+            ),
+          }}
+        />
+      )}
       <Tabs.Screen
         name="stats"
         options={{
