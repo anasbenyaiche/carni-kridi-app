@@ -16,8 +16,8 @@ export default function TabLayout() {
           borderTopWidth: 1,
           borderTopColor: '#E5E7EB',
           paddingTop: 5,
-          paddingBottom: insets.bottom + 5, // 👈 Safe padding
-          height: 60 + insets.bottom,       // 👈 Adjust height too
+          paddingBottom: insets.bottom + 5, 
+          height: 60 + insets.bottom,       
         },
       }}
     >
