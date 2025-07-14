@@ -112,7 +112,7 @@ export default function ClientsScreen() {
             <Text style={styles.emptyText}>Aucun client trouvé</Text>
             <TouchableOpacity 
               style={styles.addClientButton}
-              onPress={() => router.push('/add-client')}
+              onPress={() => router.push('/add')}
             >
               <Text style={styles.addClientText}>Ajouter un client</Text>
             </TouchableOpacity>
