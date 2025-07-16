@@ -128,8 +128,20 @@ await attara.save(); // save after storeId is defined
 
     await KridiEntry.insertMany(kridiEntries);
 
+    // Create an admin user
+    const admin = new User({
+      name: 'Admin User',
+      phone: '+21629999999',
+      email: 'admin@example.com',
+      passwordHash: '123456',
+      role: 'admin',
+      verified: true,
+    });
+    await admin.save();
+
     console.log('Database seeded successfully!');
     console.log('Login credentials:');
+    console.log('Admin: admin@example.com / 123456');
     console.log('Attara: ahmed@example.com / 123456');
     console.log('Worker: fatima@example.com / 123456');
     

@@ -3,11 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
-const storeRoutes = require('./routes/stores');
-const clientRoutes = require('./routes/clients');
-const kridiRoutes = require('./routes/kridi');
+const indexRoutes = require('./routes/index');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -31,11 +27,7 @@ mongoose.connection.on('error', (err) => {
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/stores', storeRoutes);
-app.use('/api/clients', clientRoutes);
-app.use('/api/kridi', kridiRoutes);
+app.use('/api', indexRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { clientService, Client } from '../../services/clientService';
-import { Search, Plus, Phone, User } from 'lucide-react-native';
+import { Search, Plus, Phone, User, Download, Upload } from 'lucide-react-native';
 import ClientDetailsCard from '../../components/ClientDetailsCard';
 
 export default function ClientsScreen() {
@@ -74,16 +74,50 @@ export default function ClientsScreen() {
     />
   );
 
+  // Export handler
+  const handleExport = async () => {
+    try {
+      await clientService.exportClients();
+      // Optionally show a toast or alert
+    } catch (error) {
+      Alert.alert('Erreur', 'Export échoué');
+    }
+  };
+
+  // Import handler
+  const handleImport = async () => {
+    try {
+      // You need to use a file picker here (e.g. expo-document-picker)
+      // Example with expo-document-picker:
+      // const result = await DocumentPicker.getDocumentAsync({ type: ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'] });
+      // if (result.type === 'success') {
+      //   await clientService.importClients(result.uri);
+      // }
+      // For now, just a placeholder:
+      Alert.alert('Import', 'Sélectionnez un fichier Excel à importer');
+    } catch (error) {
+      Alert.alert('Erreur', 'Import échoué');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Clients</Text>
-        <TouchableOpacity 
-          style={styles.addButton}
-          onPress={() => router.push('/add')}
-        >
-          <Plus size={20} color="#FFFFFF" />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <TouchableOpacity style={styles.iconButton} onPress={handleImport}>
+            <Upload size={20} color="#10B981" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton} onPress={handleExport}>
+            <Download size={20} color="#10B981" />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.addButton}
+            onPress={() => router.push('/add')}
+          >
+            <Plus size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.searchContainer}>
@@ -248,5 +282,11 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  iconButton: {
+    backgroundColor: '#ECFDF5',
+    borderRadius: 8,
+    padding: 12,
+    marginLeft: 8,
   },
 });
