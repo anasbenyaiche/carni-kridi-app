@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Phone } from 'lucide-react-native';
 import { Client } from '../services/clientService';
+import { formatCardDate } from '../utils/dateUtils';
 
 export default function ClientDetailsCard({
   client,
@@ -26,19 +27,21 @@ export default function ClientDetailsCard({
           <Text
             style={[
               styles.balanceText,
-              (client.totalDebt - client.totalPaid) > 0 ? styles.debtText : styles.paidText,
+              client.totalDebt - client.totalPaid > 0
+                ? styles.debtText
+                : styles.paidText,
             ]}
           >
             {formatCurrency(client.totalDebt - client.totalPaid)}
           </Text>
           <Text style={styles.balanceLabel}>
-            {(client.totalDebt - client.totalPaid) > 0 ? 'À payer' : 'Soldé'}
+            {client.totalDebt - client.totalPaid > 0 ? 'À payer' : 'Soldé'}
           </Text>
         </View>
       </View>
       {client.lastTransaction && (
         <Text style={styles.lastTransaction}>
-          Dernière transaction: {new Date(client.lastTransaction).toLocaleDateString()}
+          Dernière transaction: {formatCardDate(client.lastTransaction)}
         </Text>
       )}
     </TouchableOpacity>

@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  Switch,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { router } from 'expo-router';
 import ConfirmModal from '../../components/ConfirmModal';
@@ -28,7 +35,10 @@ export default function SettingsScreen() {
 
   return (
     <>
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}
+      >
         {/* Consistent header style */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Paramètres</Text>
@@ -52,8 +62,8 @@ export default function SettingsScreen() {
         {user?.role === 'admin' && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Administration</Text>
-            <TouchableOpacity 
-              style={styles.actionButton} 
+            <TouchableOpacity
+              style={styles.actionButton}
               onPress={() => router.push('/admin')}
             >
               <Shield size={20} color="#fff" style={{ marginRight: 8 }} />
@@ -66,7 +76,10 @@ export default function SettingsScreen() {
         {user?.role === 'attara' && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Gestion des employés</Text>
-            <TouchableOpacity style={styles.actionButton} onPress={() => setShowWorkerModal(true)}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => setShowWorkerModal(true)}
+            >
               <Users size={20} color="#fff" style={{ marginRight: 8 }} />
               <Text style={styles.actionButtonText}>Ajouter un employé</Text>
             </TouchableOpacity>
@@ -85,7 +98,10 @@ export default function SettingsScreen() {
         {/* Account */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Compte</Text>
-          <TouchableOpacity style={[styles.actionButton, styles.logoutButton]} onPress={handleLogout}>
+          <TouchableOpacity
+            style={[styles.actionButton, styles.logoutButton]}
+            onPress={handleLogout}
+          >
             <Text style={styles.actionButtonText}>Se déconnecter</Text>
           </TouchableOpacity>
         </View>
@@ -94,10 +110,12 @@ export default function SettingsScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>À propos</Text>
           <Text style={styles.aboutText}>Version 1.0.0</Text>
-          <Text style={styles.aboutSubtext}>Carni Kridi - Gestion des crédits</Text>
+          <Text style={styles.aboutSubtext}>
+            Carni Kridi - Gestion des crédits
+          </Text>
         </View>
       </ScrollView>
-      
+
       <ConfirmModal
         visible={showLogoutModal}
         title="Déconnexion"
@@ -107,7 +125,7 @@ export default function SettingsScreen() {
         onConfirm={confirmLogout}
         onCancel={() => setShowLogoutModal(false)}
       />
-      
+
       <AddEmployerForm
         visible={showWorkerModal}
         onClose={() => setShowWorkerModal(false)}

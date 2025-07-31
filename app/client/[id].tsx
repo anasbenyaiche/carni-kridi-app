@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { clientService } from '../../services/clientService';
 import { Phone, ArrowLeft, Menu } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
 import TransactionList from '../../components/TransactionList';
+import { formatDateTime } from '../../utils/dateUtils';
 
 export default function ClientDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -55,15 +63,24 @@ export default function ClientDetailsScreen() {
       <StatusBar style="dark" backgroundColor="#F9FAFB" />
       {/* Custom Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.headerBtn}>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.headerBtn}
+        >
           <ArrowLeft size={24} color="#111827" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Client</Text>
-        <TouchableOpacity onPress={() => router.push('/(tabs)')} style={styles.headerBtn}>
+        <TouchableOpacity
+          onPress={() => router.push('/(tabs)')}
+          style={styles.headerBtn}
+        >
           <Menu size={24} color="#111827" />
         </TouchableOpacity>
       </View>
-      <ScrollView style={styles.container} contentContainerStyle={{ padding: 24 }}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ padding: 24 }}
+      >
         <View style={styles.card}>
           <Text style={styles.title}>Informations du client</Text>
           <View style={styles.infoGroup}>
@@ -91,13 +108,13 @@ export default function ClientDetailsScreen() {
           ) : null}
           <View style={styles.infoGroup}>
             <Text style={styles.label}>Limite de crédit :</Text>
-            <Text style={styles.value}>{client.creditLimit ? `${client.creditLimit} TND` : 'Non défini'}</Text>
+            <Text style={styles.value}>
+              {client.creditLimit ? `${client.creditLimit} TND` : 'Non défini'}
+            </Text>
           </View>
           <View style={styles.infoGroup}>
             <Text style={styles.label}>Kridi (Dette) :</Text>
-            <Text style={[styles.value, debtColor]}>
-              {debt.toFixed(2)} TND
-            </Text>
+            <Text style={[styles.value, debtColor]}>{debt.toFixed(2)} TND</Text>
           </View>
           {client.notes ? (
             <View style={styles.infoGroup}>
@@ -108,8 +125,17 @@ export default function ClientDetailsScreen() {
           <View style={styles.infoGroup}>
             <Text style={styles.label}>Dernière transaction :</Text>
             <Text style={styles.value}>
-              {transactions[0]?.createdAt && !isNaN(Date.parse(transactions[0].createdAt))
-                ? new Date(transactions[0].createdAt).toLocaleDateString()
+              {transactions[0]?.createdAt
+                ? (() => {
+                    try {
+                      const date = parseISO(transactions[0].createdAt);
+                      return isValid(date)
+                        ? format(date, 'dd MMMM yyyy à HH:mm', { locale: fr })
+                        : 'Date invalide';
+                    } catch {
+                      return 'Date invalide';
+                    }
+                  })()
                 : 'Aucune'}
             </Text>
           </View>
@@ -129,7 +155,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9FAFB',
     paddingTop: 48,
     paddingBottom: 12,
-    paddingHorizontal: 16,  
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     justifyContent: 'space-between',

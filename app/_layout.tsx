@@ -20,18 +20,24 @@ const AuthGate = () => {
     }
 
     const inTabsGroup = segments[0] === '(tabs)';
+    const inClientRoute = segments[0] === 'client';
+    const inAdminRoute = segments[0] === 'admin';
+    const inAuthenticatedArea = inTabsGroup || inClientRoute || inAdminRoute;
 
-    // If the user is logged in but not in the main app section, redirect them.
-    if (user && !inTabsGroup) {
+    // If the user is logged in but not in any authenticated section, redirect them to tabs.
+    if (
+      user &&
+      !inAuthenticatedArea &&
+      segments[0] !== 'login' &&
+      segments[0] !== 'register'
+    ) {
       router.replace('/(tabs)');
-    } 
-    // If the user is not logged in but is trying to access the main app, redirect them to login.
-    else if (!user && inTabsGroup) {
+    }
+    // If the user is not logged in but is trying to access authenticated areas, redirect them to login.
+    else if (!user && inAuthenticatedArea) {
       router.replace('/login');
     }
-  }, [user, segments, loading]);
-
-  // While checking auth, show a loading indicator.
+  }, [user, segments, loading]); // While checking auth, show a loading indicator.
   // This prevents the app from rendering a page before we know where to go.
   if (loading) {
     return (
@@ -55,11 +61,10 @@ const AuthGate = () => {
   );
 };
 
-
 // This is the main RootLayout component.
 export default function RootLayout() {
   // Your useFrameworkReady hook can stay if you need it.
-   useFrameworkReady(); 
+  useFrameworkReady();
 
   return (
     <LoadingProvider>

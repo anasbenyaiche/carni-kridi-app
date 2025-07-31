@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  FlatList, 
-  TouchableOpacity, 
-  StyleSheet, 
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
   RefreshControl,
-  Alert 
+  Alert,
 } from 'react-native';
+import { formatCardDate } from '../utils/dateUtils';
 import { Store, storeService } from '../services/storeService';
 import { useLoading } from '../contexts/LoadingContext';
 import { LoadingSpinner } from './LoadingOverlay';
-import { Store as StoreIcon, MapPin, Phone, ToggleLeft, ToggleRight } from 'lucide-react-native';
+import {
+  Store as StoreIcon,
+  MapPin,
+  Phone,
+  ToggleLeft,
+  ToggleRight,
+} from 'lucide-react-native';
 
 interface StoreListProps {
   onStorePress?: (store: Store) => void;
   refreshTrigger?: number;
 }
 
-export default function StoreList({ onStorePress, refreshTrigger }: StoreListProps) {
+export default function StoreList({
+  onStorePress,
+  refreshTrigger,
+}: StoreListProps) {
   const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -50,15 +60,15 @@ export default function StoreList({ onStorePress, refreshTrigger }: StoreListPro
     try {
       showLoading();
       setLoadingMessage('Mise à jour du statut...');
-      
+
       const updatedStore = await storeService.toggleStoreStatus(store._id);
-      
-      setStores(prev => prev.map(s => 
-        s._id === store._id ? updatedStore : s
-      ));
-      
+
+      setStores((prev) =>
+        prev.map((s) => (s._id === store._id ? updatedStore : s))
+      );
+
       Alert.alert(
-        'Succès', 
+        'Succès',
         `Magasin ${updatedStore.active ? 'activé' : 'désactivé'} avec succès`
       );
     } catch (error: any) {
@@ -71,7 +81,7 @@ export default function StoreList({ onStorePress, refreshTrigger }: StoreListPro
   };
 
   const renderStore = ({ item }: { item: Store }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[styles.storeCard, !item.active && styles.inactiveStore]}
       onPress={() => onStorePress?.(item)}
     >
@@ -94,7 +104,7 @@ export default function StoreList({ onStorePress, refreshTrigger }: StoreListPro
             </View>
           )}
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.statusToggle}
           onPress={() => toggleStoreStatus(item)}
         >
@@ -110,7 +120,7 @@ export default function StoreList({ onStorePress, refreshTrigger }: StoreListPro
           {item.active ? 'Actif' : 'Inactif'}
         </Text>
         <Text style={styles.storeDate}>
-          Créé le {new Date(item.createdAt).toLocaleDateString()}
+          Créé le {formatCardDate(item.createdAt)}
         </Text>
       </View>
     </TouchableOpacity>

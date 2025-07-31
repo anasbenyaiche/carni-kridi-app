@@ -9,7 +9,15 @@ import {
   Alert,
 } from 'react-native';
 import { kridiService } from '../../services/kridiService';
-import { TrendingUp, TrendingDown, Users, DollarSign, Calendar, FileText } from 'lucide-react-native';
+import {
+  TrendingUp,
+  TrendingDown,
+  Users,
+  DollarSign,
+  Calendar,
+  FileText,
+} from 'lucide-react-native';
+import { formatMonthYear } from '../../utils/dateUtils';
 
 export default function StatsScreen() {
   const [summary, setSummary] = useState<any>(null);
@@ -75,7 +83,8 @@ export default function StatsScreen() {
       style={styles.container}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
+      }
+    >
       <View style={styles.header}>
         <Text style={styles.title}>Statistiques</Text>
         <TouchableOpacity style={styles.exportButton}>
@@ -90,9 +99,12 @@ export default function StatsScreen() {
             <TrendingUp size={24} color="#EF4444" />
             <Text style={styles.statTitle}>Crédits</Text>
           </View>
-          <Text style={styles.statValue}>{formatCurrency(debtSummary.remaining)}</Text>
+          <Text style={styles.statValue}>
+            {formatCurrency(debtSummary.remaining)}
+          </Text>
           <Text style={styles.statSubtext}>
-            {debtSummary.count} transaction(s) • {formatCurrency(debtSummary.total)} total
+            {debtSummary.count} transaction(s) •{' '}
+            {formatCurrency(debtSummary.total)} total
           </Text>
         </View>
 
@@ -101,7 +113,9 @@ export default function StatsScreen() {
             <TrendingDown size={24} color="#10B981" />
             <Text style={styles.statTitle}>Paiements</Text>
           </View>
-          <Text style={styles.statValue}>{formatCurrency(paymentSummary.total)}</Text>
+          <Text style={styles.statValue}>
+            {formatCurrency(paymentSummary.total)}
+          </Text>
           <Text style={styles.statSubtext}>
             {paymentSummary.count} paiement(s) reçu(s)
           </Text>
@@ -123,14 +137,20 @@ export default function StatsScreen() {
             <DollarSign size={24} color="#F59E0B" />
             <Text style={styles.statTitle}>Solde Net</Text>
           </View>
-          <Text style={[
-            styles.statValue,
-            (debtSummary.remaining - paymentSummary.total) > 0 ? styles.positiveValue : styles.negativeValue
-          ]}>
+          <Text
+            style={[
+              styles.statValue,
+              debtSummary.remaining - paymentSummary.total > 0
+                ? styles.positiveValue
+                : styles.negativeValue,
+            ]}
+          >
             {formatCurrency(debtSummary.remaining - paymentSummary.total)}
           </Text>
           <Text style={styles.statSubtext}>
-            {(debtSummary.remaining - paymentSummary.total) > 0 ? 'À recevoir' : 'Excédent'}
+            {debtSummary.remaining - paymentSummary.total > 0
+              ? 'À recevoir'
+              : 'Excédent'}
           </Text>
         </View>
       </View>
@@ -140,18 +160,20 @@ export default function StatsScreen() {
         <View style={styles.monthlyCard}>
           <View style={styles.monthlyHeader}>
             <Calendar size={20} color="#6B7280" />
-            <Text style={styles.monthlyTitle}>
-              {new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
-            </Text>
+            <Text style={styles.monthlyTitle}>{formatMonthYear()}</Text>
           </View>
           <View style={styles.monthlyStats}>
             <View style={styles.monthlyStat}>
               <Text style={styles.monthlyStatLabel}>Nouveaux crédits</Text>
-              <Text style={styles.monthlyStatValue}>{formatCurrency(debtSummary.total)}</Text>
+              <Text style={styles.monthlyStatValue}>
+                {formatCurrency(debtSummary.total)}
+              </Text>
             </View>
             <View style={styles.monthlyStat}>
               <Text style={styles.monthlyStatLabel}>Paiements reçus</Text>
-              <Text style={styles.monthlyStatValue}>{formatCurrency(paymentSummary.total)}</Text>
+              <Text style={styles.monthlyStatValue}>
+                {formatCurrency(paymentSummary.total)}
+              </Text>
             </View>
           </View>
         </View>
@@ -163,19 +185,19 @@ export default function StatsScreen() {
           <View style={styles.indicator}>
             <Text style={styles.indicatorLabel}>Taux de recouvrement</Text>
             <Text style={styles.indicatorValue}>
-              {debtSummary.total > 0 ? 
-                `${((paymentSummary.total / debtSummary.total) * 100).toFixed(1)}%` : 
-                '0%'
-              }
+              {debtSummary.total > 0
+                ? `${((paymentSummary.total / debtSummary.total) * 100).toFixed(
+                    1
+                  )}%`
+                : '0%'}
             </Text>
           </View>
           <View style={styles.indicator}>
             <Text style={styles.indicatorLabel}>Crédit moyen par client</Text>
             <Text style={styles.indicatorValue}>
-              {summary?.clientCount > 0 ? 
-                formatCurrency(debtSummary.remaining / summary.clientCount) : 
-                '0.00 TND'
-              }
+              {summary?.clientCount > 0
+                ? formatCurrency(debtSummary.remaining / summary.clientCount)
+                : '0.00 TND'}
             </Text>
           </View>
         </View>

@@ -1,18 +1,23 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { formatTransactionDate } from '../utils/dateUtils';
 
 export default function TransactionCard({ transaction }: { transaction: any }) {
   const isDebt = transaction.type === 'debt';
+
   return (
     <View style={styles.transactionCard}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={styles.transactionReason}>{transaction.reason}</Text>
-        <Text style={[styles.transactionAmount, isDebt ? styles.debt : styles.ok]}>
-          {isDebt ? '+' : '-'}{transaction.amount.toFixed(2)} TND
+        <Text
+          style={[styles.transactionAmount, isDebt ? styles.debt : styles.ok]}
+        >
+          {isDebt ? '+' : '-'}
+          {transaction.amount.toFixed(2)} TND
         </Text>
       </View>
       <Text style={styles.transactionDate}>
-        {new Date(transaction.date).toLocaleDateString()} {new Date(transaction.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        {formatTransactionDate(transaction.date)}
       </Text>
       <Text style={styles.transactionType}>
         {isDebt ? 'Dette' : 'Paiement'}
