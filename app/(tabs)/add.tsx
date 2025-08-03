@@ -8,51 +8,70 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import { UserPlus, CreditCard } from 'lucide-react-native';
-import AddClientForm from '../../components/AddClientForm';
-import AddKridiForm from '../../components/AddKridiForm';
+import { CreditCard, Banknote } from 'lucide-react-native';
+import AddKridiStepsForm from '../../components/AddKridiStepsForm';
+import AddPaymentForm from '../../components/AddPaymentForm';
 
-export default function AddScreen() {
-  const [activeTab, setActiveTab] = useState<'client' | 'kridi'>('client');
+export default function AddTransactionScreen() {
+  const [activeTab, setActiveTab] = useState<'kridi' | 'payment'>('kridi');
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.header}>
-        <Text style={styles.title}>Ajouter</Text>
+        <Text style={styles.title}>Ajouter Transaction</Text>
       </View>
 
       <View style={styles.tabContainer}>
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'client' && styles.activeTab]}
-          onPress={() => setActiveTab('client')}
-        >
-          <UserPlus size={20} color={activeTab === 'client' ? '#FFFFFF' : '#6B7280'} />
-          <Text style={[styles.tabText, activeTab === 'client' && styles.activeTabText]}>
-            Client
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
           style={[styles.tab, activeTab === 'kridi' && styles.activeTab]}
           onPress={() => setActiveTab('kridi')}
         >
-          <CreditCard size={20} color={activeTab === 'kridi' ? '#FFFFFF' : '#6B7280'} />
-          <Text style={[styles.tabText, activeTab === 'kridi' && styles.activeTabText]}>
+          <CreditCard
+            size={18}
+            color={activeTab === 'kridi' ? '#FFFFFF' : '#6B7280'}
+          />
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === 'kridi' && styles.activeTabText,
+            ]}
+          >
             Kridi
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'payment' && styles.activeTab]}
+          onPress={() => setActiveTab('payment')}
+        >
+          <Banknote
+            size={18}
+            color={activeTab === 'payment' ? '#FFFFFF' : '#6B7280'}
+          />
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === 'payment' && styles.activeTabText,
+            ]}
+          >
+            Paiement
           </Text>
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.content}>
-        {activeTab === 'client' ? (
-          <AddClientForm styles={styles} />
-        ) : (
-          <AddKridiForm styles={styles} />
+      <View style={styles.content}>
+        {activeTab === 'kridi' && (
+          <AddKridiStepsForm onComplete={() => setActiveTab('payment')} />
         )}
-      </ScrollView>
+        {activeTab === 'payment' && (
+          <ScrollView style={styles.paymentScroll}>
+            <AddPaymentForm onComplete={() => setActiveTab('kridi')} />
+          </ScrollView>
+        )}
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -100,6 +119,9 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   content: {
+    flex: 1,
+  },
+  paymentScroll: {
     flex: 1,
     padding: 20,
   },
@@ -171,5 +193,16 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  placeholderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  placeholderText: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
   },
 });

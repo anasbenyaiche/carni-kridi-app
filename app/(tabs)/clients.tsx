@@ -11,7 +11,14 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { clientService, Client } from '../../services/clientService';
-import { Search, Plus, Phone, User, Download, Upload } from 'lucide-react-native';
+import {
+  Search,
+  Plus,
+  Phone,
+  User,
+  Download,
+  Upload,
+} from 'lucide-react-native';
 import ClientDetailsCard from '../../components/ClientDetailsCard';
 
 export default function ClientsScreen() {
@@ -29,13 +36,13 @@ export default function ClientsScreen() {
   const loadClients = async (pageNum = 1, searchTerm = search) => {
     try {
       const response = await clientService.getClients(pageNum, 20, searchTerm);
-      
+
       if (pageNum === 1) {
         setClients(response.clients || []);
       } else {
-        setClients(prev => [...prev, ...(response.clients || [])]);
+        setClients((prev) => [...prev, ...(response.clients || [])]);
       }
-      
+
       setHasMore(response.page < response.pages);
       setPage(pageNum);
     } catch (error) {
@@ -111,9 +118,9 @@ export default function ClientsScreen() {
           <TouchableOpacity style={styles.iconButton} onPress={handleExport}>
             <Download size={20} color="#10B981" />
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.addButton}
-            onPress={() => router.push('/add')}
+            onPress={() => router.push('/add-client')}
           >
             <Plus size={20} color="#FFFFFF" />
           </TouchableOpacity>
@@ -144,9 +151,9 @@ export default function ClientsScreen() {
           <View style={styles.emptyContainer}>
             <User size={64} color="#D1D5DB" />
             <Text style={styles.emptyText}>Aucun client trouvé</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.addClientButton}
-              onPress={() => router.push('/add')}
+              onPress={() => router.push('/add-client')}
             >
               <Text style={styles.addClientText}>Ajouter un client</Text>
             </TouchableOpacity>

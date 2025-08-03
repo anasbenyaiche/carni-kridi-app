@@ -16,19 +16,11 @@ export const formatDate = (
   fallback: string = 'Date invalide'
 ): string => {
   try {
-    console.log('formatDate called with:', date, 'type:', typeof date);
     const dateObj = typeof date === 'string' ? new Date(date) : date;
-    console.log('dateObj:', dateObj, 'isValid:', !isNaN(dateObj.getTime()));
-    if (isNaN(dateObj.getTime())) {
-      console.log('Date is invalid, returning fallback:', fallback);
-      return fallback;
-    }
+    if (isNaN(dateObj.getTime())) return fallback;
 
-    const result = new Intl.DateTimeFormat('fr-FR', options).format(dateObj);
-    console.log('formatDate result:', result);
-    return result;
-  } catch (error) {
-    console.log('formatDate error:', error);
+    return new Intl.DateTimeFormat('fr-FR', options).format(dateObj);
+  } catch {
     return fallback;
   }
 };
@@ -88,8 +80,7 @@ export const formatMonthYear = (
   date: string | Date = new Date(),
   fallback: string = 'Date invalide'
 ): string => {
-  console.log('formatMonthYear called with:', date);
-  const result = formatDate(
+  return formatDate(
     date,
     {
       month: 'long',
@@ -97,6 +88,4 @@ export const formatMonthYear = (
     },
     fallback
   );
-  console.log('formatMonthYear result:', result);
-  return result;
 };

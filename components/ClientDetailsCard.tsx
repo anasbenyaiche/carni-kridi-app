@@ -27,15 +27,24 @@ export default function ClientDetailsCard({
           <Text
             style={[
               styles.balanceText,
-              client.totalDebt - client.totalPaid > 0
-                ? styles.debtText
-                : styles.paidText,
+              (() => {
+                const balance = client.totalDebt - client.totalPaid;
+                return balance > 0 ? styles.debtText : styles.paidText;
+              })(),
             ]}
           >
-            {formatCurrency(client.totalDebt - client.totalPaid)}
+            {(() => {
+              const balance = client.totalDebt - client.totalPaid;
+              return formatCurrency(balance < 0 ? Math.abs(balance) : balance);
+            })()}
           </Text>
           <Text style={styles.balanceLabel}>
-            {client.totalDebt - client.totalPaid > 0 ? 'À payer' : 'Soldé'}
+            {(() => {
+              const balance = client.totalDebt - client.totalPaid;
+              if (balance > 0) return 'À payer';
+              if (balance < 0) return 'Crédit';
+              return 'Soldé';
+            })()}
           </Text>
         </View>
       </View>

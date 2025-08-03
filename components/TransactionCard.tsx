@@ -7,8 +7,15 @@ export default function TransactionCard({ transaction }: { transaction: any }) {
 
   return (
     <View style={styles.transactionCard}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={styles.transactionReason}>{transaction.reason}</Text>
+      <View style={styles.transactionHeader}>
+        <View style={styles.transactionInfo}>
+          <Text style={styles.transactionType}>
+            {isDebt ? 'Dette' : 'Paiement'}
+          </Text>
+          <Text style={styles.transactionDate}>
+            {formatTransactionDate(transaction.createdAt)}
+          </Text>
+        </View>
         <Text
           style={[styles.transactionAmount, isDebt ? styles.debt : styles.ok]}
         >
@@ -16,27 +23,32 @@ export default function TransactionCard({ transaction }: { transaction: any }) {
           {transaction.amount.toFixed(2)} TND
         </Text>
       </View>
-      <Text style={styles.transactionDate}>
-        {formatTransactionDate(transaction.date)}
-      </Text>
-      <Text style={styles.transactionType}>
-        {isDebt ? 'Dette' : 'Paiement'}
-      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   transactionCard: {
-    backgroundColor: '#F3F4F6',
-    borderRadius: 10,
-    padding: 14,
-    marginBottom: 10,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: '#E5E7EB',
   },
-  transactionReason: {
-    fontSize: 16,
+  transactionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  transactionInfo: {
+    flex: 1,
+  },
+  transactionType: {
+    fontSize: 14,
     fontWeight: '600',
-    color: '#111827',
+    color: '#374151',
+    marginBottom: 2,
   },
   transactionAmount: {
     fontSize: 16,
@@ -51,14 +63,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   transactionDate: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#6B7280',
-    marginTop: 2,
-  },
-  transactionType: {
-    fontSize: 13,
-    color: '#374151',
-    marginTop: 2,
-    fontStyle: 'italic',
   },
 });

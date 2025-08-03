@@ -17,7 +17,6 @@ const kridiEntrySchema = new mongoose.Schema({
   },
   reason: {
     type: String,
-    required: true,
     trim: true,
   },
   type: {
@@ -36,7 +35,7 @@ const kridiEntrySchema = new mongoose.Schema({
   },
   remainingAmount: {
     type: Number,
-    default: function() {
+    default: function () {
       return this.amount - this.paidAmount;
     },
   },
@@ -63,10 +62,10 @@ kridiEntrySchema.index({ clientId: 1, createdAt: -1 });
 kridiEntrySchema.index({ storeId: 1, createdAt: -1 });
 
 // Update remaining amount before saving
-kridiEntrySchema.pre('save', function(next) {
+kridiEntrySchema.pre('save', function (next) {
   this.remainingAmount = this.amount - this.paidAmount;
   this.updatedAt = Date.now();
-  
+
   // Update status based on payment
   if (this.paidAmount >= this.amount) {
     this.status = 'paid';
@@ -76,7 +75,7 @@ kridiEntrySchema.pre('save', function(next) {
   } else {
     this.status = 'unpaid';
   }
-  
+
   next();
 });
 

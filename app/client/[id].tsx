@@ -113,8 +113,12 @@ export default function ClientDetailsScreen() {
             </Text>
           </View>
           <View style={styles.infoGroup}>
-            <Text style={styles.label}>Kridi (Dette) :</Text>
-            <Text style={[styles.value, debtColor]}>{debt.toFixed(2)} TND</Text>
+            <Text style={styles.label}>
+              {debt > 0 ? 'Kridi (Dette) :' : debt < 0 ? 'Crédit :' : 'Solde :'}
+            </Text>
+            <Text style={[styles.value, debtColor]}>
+              {Math.abs(debt).toFixed(2)} TND
+            </Text>
           </View>
           {client.notes ? (
             <View style={styles.infoGroup}>
@@ -126,16 +130,7 @@ export default function ClientDetailsScreen() {
             <Text style={styles.label}>Dernière transaction :</Text>
             <Text style={styles.value}>
               {transactions[0]?.createdAt
-                ? (() => {
-                    try {
-                      const date = parseISO(transactions[0].createdAt);
-                      return isValid(date)
-                        ? format(date, 'dd MMMM yyyy à HH:mm', { locale: fr })
-                        : 'Date invalide';
-                    } catch {
-                      return 'Date invalide';
-                    }
-                  })()
+                ? formatDateTime(transactions[0].createdAt)
                 : 'Aucune'}
             </Text>
           </View>

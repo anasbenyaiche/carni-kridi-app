@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+} from 'react-native';
 import TransactionCard from './TransactionCard';
 
 export default function TransactionList({
@@ -13,15 +19,19 @@ export default function TransactionList({
     <View style={styles.transactionsSection}>
       <Text style={styles.transactionsTitle}>Transactions</Text>
       {loading ? (
-        <ActivityIndicator size="small" color="#10B981" style={{ marginTop: 16 }} />
+        <ActivityIndicator
+          size="small"
+          color="#10B981"
+          style={{ marginTop: 16 }}
+        />
       ) : transactions.length === 0 ? (
         <Text style={styles.noTransactions}>Aucune transaction trouvée.</Text>
       ) : (
         <FlatList
           data={transactions}
-          keyExtractor={item => item._id}
+          keyExtractor={(item) => item._id}
           renderItem={({ item }) => <TransactionCard transaction={item} />}
-          contentContainerStyle={{ paddingVertical: 8 }}
+          contentContainerStyle={{ paddingVertical: 4 }}
           scrollEnabled={false}
         />
       )}
@@ -45,7 +55,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#111827',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   noTransactions: {
     color: '#6B7280',

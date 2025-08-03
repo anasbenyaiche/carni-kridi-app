@@ -6,6 +6,7 @@ import {
   ChartBar as BarChart3,
   Settings,
   Store,
+  UserPlus,
 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../../contexts/AuthContext';
@@ -49,9 +50,18 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="add-client"
+        options={{
+          title: 'Ajouter Client',
+          tabBarIcon: ({ size, color }) => (
+            <UserPlus size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="add"
         options={{
-          title: 'Ajouter',
+          title: 'Transactions',
           tabBarIcon: ({ size, color }) => (
             <PlusCircle size={size} color={color} />
           ),

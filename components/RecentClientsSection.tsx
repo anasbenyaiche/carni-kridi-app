@@ -29,12 +29,32 @@ export default function RecentClientsSection({
               <Text
                 style={[
                   globalStyles.balanceText,
-                  client.totalDebt > 0
-                    ? globalStyles.debtText
-                    : globalStyles.paidText,
+                  (() => {
+                    const balance = client.totalDebt - client.totalPaid;
+                    // If balance > 0: client owes money (show in red)
+                    // If balance <= 0: client is paid up or overpaid (show in green)
+                    return balance > 0
+                      ? globalStyles.debtText
+                      : globalStyles.paidText;
+                  })(),
                 ]}
               >
-                {formatCurrency(client.totalDebt - client.totalPaid)}
+                {(() => {
+                  const balance = client.totalDebt - client.totalPaid;
+                  // If balance is negative (overpaid), show absolute value in green
+                  // If balance is positive (debt), show as is in red
+                  return formatCurrency(
+                    balance < 0 ? Math.abs(balance) : balance
+                  );
+                })()}
+              </Text>
+              <Text style={globalStyles.statLabel}>
+                {(() => {
+                  const balance = client.totalDebt - client.totalPaid;
+                  if (balance > 0) return 'À payer';
+                  if (balance < 0) return 'Crédit';
+                  return 'Soldé';
+                })()}
               </Text>
             </View>
           </TouchableOpacity>

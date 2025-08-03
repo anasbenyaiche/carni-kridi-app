@@ -23,11 +23,11 @@ const clientSchema = new mongoose.Schema({
   storeId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Store',
-    required: true,
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
   },
   creditLimit: {
     type: Number,
@@ -66,7 +66,7 @@ const clientSchema = new mongoose.Schema({
 clientSchema.index({ storeId: 1, name: 1 });
 clientSchema.index({ phone: 1, storeId: 1 });
 
-clientSchema.pre('save', function(next) {
+clientSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
