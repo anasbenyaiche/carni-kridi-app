@@ -64,7 +64,9 @@ export default function AddTransactionScreen() {
 
       <View style={styles.content}>
         {activeTab === 'kridi' && (
-          <AddKridiStepsForm onComplete={() => setActiveTab('payment')} />
+          <ScrollView style={styles.kridiScroll}>
+            <AddKridiStepsForm onComplete={() => setActiveTab('payment')} />
+          </ScrollView>
         )}
         {activeTab === 'payment' && (
           <ScrollView style={styles.paymentScroll}>
@@ -119,6 +121,9 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   content: {
+    flex: 1,
+  },
+  kridiScroll: {
     flex: 1,
   },
   paymentScroll: {
