@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  RefreshControl,
-  Alert,
-} from 'react-native';
+import { View, Text, ScrollView, RefreshControl, Alert } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { kridiService } from '../../services/kridiService';
 import { clientService } from '../../services/clientService';
@@ -37,7 +31,7 @@ export default function HomeScreen() {
     try {
       const [summaryData, clientsData] = await Promise.all([
         kridiService.getSummary(),
-        clientService.getClients(1, 5)
+        clientService.getClients(1, 5),
       ]);
       setSummary(summaryData);
       setRecentClients(clientsData.clients || []);
@@ -102,7 +96,8 @@ export default function HomeScreen() {
       style={globalStyles.container}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
+      }
+    >
       <RoleHeader user={user} />
       {content}
     </ScrollView>

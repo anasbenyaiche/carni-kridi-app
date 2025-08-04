@@ -11,13 +11,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { clientService, Client } from '../../services/clientService';
-import {
-  Search,
-  Plus,
-  User,
-  Download,
-  Upload,
-} from 'lucide-react-native';
+import { Search, Plus, User, Download, Upload } from 'lucide-react-native';
 import ClientDetailsCard from '../../components/ClientDetailsCard';
 
 export default function ClientsScreen() {
@@ -28,26 +22,33 @@ export default function ClientsScreen() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const loadClients = useCallback(async (pageNum = 1, searchTerm = search) => {
-    try {
-      const response = await clientService.getClients(pageNum, 20, searchTerm);
+  const loadClients = useCallback(
+    async (pageNum = 1, searchTerm = search) => {
+      try {
+        const response = await clientService.getClients(
+          pageNum,
+          20,
+          searchTerm
+        );
 
-      if (pageNum === 1) {
-        setClients(response.clients || []);
-      } else {
-        setClients((prev) => [...prev, ...(response.clients || [])]);
+        if (pageNum === 1) {
+          setClients(response.clients || []);
+        } else {
+          setClients((prev) => [...prev, ...(response.clients || [])]);
+        }
+
+        setHasMore(response.page < response.pages);
+        setPage(pageNum);
+      } catch (err) {
+        console.error('Error loading clients:', err);
+        Alert.alert('Erreur', 'Impossible de charger les clients');
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
       }
-
-      setHasMore(response.page < response.pages);
-      setPage(pageNum);
-    } catch (err) {
-      console.error('Error loading clients:', err);
-      Alert.alert('Erreur', 'Impossible de charger les clients');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [search]);
+    },
+    [search]
+  );
 
   useEffect(() => {
     loadClients();
