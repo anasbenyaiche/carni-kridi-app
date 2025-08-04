@@ -85,7 +85,7 @@ export default function ClientsScreen() {
     try {
       await clientService.exportClients();
       // Optionally show a toast or alert
-    } catch (err) {
+    } catch {
       Alert.alert('Erreur', 'Export échoué');
     }
   };
@@ -101,7 +101,7 @@ export default function ClientsScreen() {
       // }
       // For now, just a placeholder:
       Alert.alert('Import', 'Sélectionnez un fichier Excel à importer');
-    } catch (error) {
+    } catch {
       Alert.alert('Erreur', 'Import échoué');
     }
   };

@@ -14,7 +14,7 @@ export default function IndexScreen() {
         router.replace('/login');
       }
     }
-  }, [user,loading]);
+  }, [user, loading, token]);
 
   if (loading) {
     return (
