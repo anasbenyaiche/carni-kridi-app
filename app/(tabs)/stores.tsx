@@ -24,7 +24,7 @@ export default function StoresScreen() {
         <View style={styles.unauthorizedContainer}>
           <Text style={styles.unauthorizedText}>Accès non autorisé</Text>
           <Text style={styles.unauthorizedSubtext}>
-            Vous n'avez pas les permissions pour voir cette page
+            Vous n&apos;avez pas les permissions pour voir cette page
           </Text>
         </View>
       </View>

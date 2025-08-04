@@ -75,7 +75,7 @@ export default function HomeScreen() {
   if (user?.role === 'admin') {
     content = (
       <Text style={{ textAlign: 'center', marginTop: 40, color: '#6B7280' }}>
-        Tableau de bord d'administration (à personnaliser)
+        Tableau de bord d&apos;administration (à personnaliser)
       </Text>
     );
   } else if (user?.role === 'attara' || user?.role === 'worker') {

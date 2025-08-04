@@ -7,7 +7,6 @@ import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import LoadingOverlay from '../components/LoadingOverlay';
 import '../utils/crashReporting'; // Initialize Sentry
-import { setUserContext, addBreadcrumb } from '../utils/crashReporting';
 
 // This is the "Gatekeeper" component. It will handle redirection.
 const AuthGate = () => {
@@ -39,7 +38,7 @@ const AuthGate = () => {
     else if (!user && inAuthenticatedArea) {
       router.replace('/login');
     }
-  }, [user, segments, loading]); // While checking auth, show a loading indicator.
+  }, [user, segments, loading, router]); // While checking auth, show a loading indicator.
   // This prevents the app from rendering a page before we know where to go.
   if (loading) {
     return (

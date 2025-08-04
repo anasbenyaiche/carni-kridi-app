@@ -28,7 +28,8 @@ export default function ClientDetailsScreen() {
         setClient(res.client);
         setBalance(res.balance);
         setTransactions(res.recentTransactions || []);
-      } catch (error) {
+      } catch (err) {
+        console.error('Failed to fetch client:', err);
         setClient(null);
         setBalance(null);
         setTransactions([]);

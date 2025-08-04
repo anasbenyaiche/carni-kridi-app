@@ -106,7 +106,7 @@ export default function AdminDashboard() {
       <View style={styles.welcomeCard}>
         <Text style={styles.welcomeTitle}>Bienvenue, {user.name}</Text>
         <Text style={styles.welcomeSubtitle}>
-          Interface d'administration système
+          Interface d&apos;administration système
         </Text>
       </View>
 
@@ -147,7 +147,7 @@ export default function AdminDashboard() {
         <View style={styles.alertCard}>
           <AlertTriangle size={20} color="#F59E0B" />
           <Text style={styles.alertText}>
-            Interface d'administration en développement
+            Interface d&apos;administration en développement
           </Text>
         </View>
       </View>

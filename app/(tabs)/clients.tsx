@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,6 @@ import { clientService, Client } from '../../services/clientService';
 import {
   Search,
   Plus,
-  Phone,
   User,
   Download,
   Upload,
@@ -29,11 +28,7 @@ export default function ClientsScreen() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  useEffect(() => {
-    loadClients();
-  }, [search]);
-
-  const loadClients = async (pageNum = 1, searchTerm = search) => {
+  const loadClients = useCallback(async (pageNum = 1, searchTerm = search) => {
     try {
       const response = await clientService.getClients(pageNum, 20, searchTerm);
 
@@ -45,14 +40,18 @@ export default function ClientsScreen() {
 
       setHasMore(response.page < response.pages);
       setPage(pageNum);
-    } catch (error) {
-      console.error('Error loading clients:', error);
+    } catch (err) {
+      console.error('Error loading clients:', err);
       Alert.alert('Erreur', 'Impossible de charger les clients');
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, [search]);
+
+  useEffect(() => {
+    loadClients();
+  }, [loadClients]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -86,7 +85,7 @@ export default function ClientsScreen() {
     try {
       await clientService.exportClients();
       // Optionally show a toast or alert
-    } catch (error) {
+    } catch (err) {
       Alert.alert('Erreur', 'Export échoué');
     }
   };

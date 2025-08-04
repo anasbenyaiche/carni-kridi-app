@@ -8,21 +8,21 @@ export default function RoleHeader({ user }: { user: any }) {
       return (
         <View style={globalStyles.header}>
           <Text style={globalStyles.greeting}>Bonjour Admin, {user?.name}!</Text>
-          <Text style={globalStyles.subtitle}>Vue d'ensemble de l'administration</Text>
+          <Text style={globalStyles.subtitle}>Vue d&apos;ensemble de l&apos;administration</Text>
         </View>
       );
     case 'attara':
       return (
         <View style={globalStyles.header}>
           <Text style={globalStyles.greeting}>Bonjour, {user?.name}!</Text>
-          <Text style={globalStyles.subtitle}>Vue d'ensemble du magasin</Text>
+          <Text style={globalStyles.subtitle}>Vue d&apos;ensemble du magasin</Text>
         </View>
       );
     case 'worker':
       return (
         <View style={globalStyles.header}>
           <Text style={globalStyles.greeting}>Bonjour, {user?.name}!</Text>
-          <Text style={globalStyles.subtitle}>Vue d'ensemble de magasin</Text>
+          <Text style={globalStyles.subtitle}>Vue d&apos;ensemble de magasin</Text>
         </View>
       );
     case 'client':
