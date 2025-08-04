@@ -18,7 +18,10 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.anasben.carnikridi",
-      "versionCode": 1
+      "versionCode": 1,
+      "compileSdkVersion": 34,
+      "targetSdkVersion": 34,
+      "buildToolsVersion": "34.0.0"
     },
     "web": {
       "bundler": "metro",

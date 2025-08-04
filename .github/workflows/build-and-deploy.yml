@@ -87,7 +87,10 @@ jobs:
         echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
         
     - name: Build Production APK
-      run: eas build --platform android --profile production --non-interactive
+      run: |
+        echo "🏗️ Starting production build..."
+        eas build --platform android --profile production --non-interactive --wait
+      timeout-minutes: 45
       
     - name: Commit version bump
       run: |
