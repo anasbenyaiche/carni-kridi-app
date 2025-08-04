@@ -1,16 +1,22 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
-import { 
-  Users, 
-  Store, 
-  BarChart3, 
-  Settings, 
-  Shield, 
+import {
+  Users,
+  Store,
+  BarChart3,
+  Settings,
+  Shield,
   Database,
   AlertTriangle,
-  TrendingUp 
+  TrendingUp,
 } from 'lucide-react-native';
 
 export default function AdminDashboard() {
@@ -25,13 +31,11 @@ export default function AdminDashboard() {
         </View>
         <View style={styles.unauthorizedContainer}>
           <Shield size={64} color="#EF4444" />
-          <Text style={styles.unauthorizedText}>
-            Accès non autorisé
-          </Text>
+          <Text style={styles.unauthorizedText}>Accès non autorisé</Text>
           <Text style={styles.unauthorizedSubtext}>
             Seuls les administrateurs peuvent accéder à cette interface
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.backButton}
             onPress={() => router.back()}
           >
@@ -79,7 +83,7 @@ export default function AdminDashboard() {
       color: '#6B7280',
     },
     {
-      title: 'Rapports d\'activité',
+      title: "Rapports d'activité",
       description: 'Logs et activités',
       icon: TrendingUp,
       onPress: () => router.push('/admin/reports'),
@@ -91,7 +95,7 @@ export default function AdminDashboard() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Administration</Text>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
         >
@@ -122,7 +126,7 @@ export default function AdminDashboard() {
       </View>
 
       <Text style={styles.sectionTitle}>Actions administratives</Text>
-      
+
       <View style={styles.actionsGrid}>
         {adminActions.map((action, index) => (
           <TouchableOpacity

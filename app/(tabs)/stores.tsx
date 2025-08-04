@@ -11,7 +11,7 @@ export default function StoresScreen() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleStoreAdded = () => {
-    setRefreshTrigger(prev => prev + 1);
+    setRefreshTrigger((prev) => prev + 1);
   };
 
   // Only show to admin or attara users
@@ -22,9 +22,7 @@ export default function StoresScreen() {
           <Text style={styles.headerTitle}>Magasins</Text>
         </View>
         <View style={styles.unauthorizedContainer}>
-          <Text style={styles.unauthorizedText}>
-            Accès non autorisé
-          </Text>
+          <Text style={styles.unauthorizedText}>Accès non autorisé</Text>
           <Text style={styles.unauthorizedSubtext}>
             Vous n'avez pas les permissions pour voir cette page
           </Text>
@@ -38,7 +36,7 @@ export default function StoresScreen() {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Magasins</Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.addButton}
             onPress={() => setShowAddStoreModal(true)}
           >
@@ -46,7 +44,7 @@ export default function StoresScreen() {
           </TouchableOpacity>
         </View>
 
-        <StoreList 
+        <StoreList
           refreshTrigger={refreshTrigger}
           onStorePress={(store) => {
             // TODO: Navigate to store details
