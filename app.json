@@ -8,6 +8,7 @@
     "scheme": "carnikridi",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "owner": "tsc-stackwaze",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.anasben.carnikridi"
@@ -44,6 +45,12 @@
       "eas": {
         "projectId": "92edbec6-3d14-4afc-92ca-57ee133eaf24"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/92edbec6-3d14-4afc-92ca-57ee133eaf24"
     }
   }
 }
