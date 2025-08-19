@@ -108,7 +108,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.demoSection}>
+        {/* <View style={styles.demoSection}>
           <Text style={styles.demoTitle}>Comptes de démonstration</Text>
           <View style={styles.demoCredentials}>
             <View style={styles.demoItem}>
@@ -120,7 +120,7 @@ export default function LoginScreen() {
               <Text style={styles.demoValue}>fatima@example.com / 123456</Text>
             </View>
           </View>
-        </View>
+        </View> */}
       </ScrollView>
     </KeyboardAvoidingView>
   );

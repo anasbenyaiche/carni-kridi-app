@@ -7,6 +7,17 @@ A comprehensive client management and kridi tracking application built with Reac
 - ✅ APK building with EAS Build
 - ✅ Crash reporting with Sentry integration
 
+## Environments
+
+The app reads API base URL from `EXPO_PUBLIC_API_URL`.
+
+- Local dev: `.env` -> `http://localhost:5000/api`
+- Preview/Production: `.env.preview` / `.env.production` -> `http://82.29.178.228:5000/api`
+
+Health check: `http://82.29.178.228:5000/api/health`
+
+You can also override per EAS profile via `eas.json > build.*.env`.
+
 ## Features
 - Client management
 - Kridi tracking

@@ -8,7 +8,8 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "ENVIRONMENT": "development"
+        "ENVIRONMENT": "development",
+        "EXPO_PUBLIC_API_URL": "http://localhost:5000/api"
       }
     },
     "preview": {
@@ -18,7 +19,8 @@
       },
       "distribution": "internal",
       "env": {
-        "ENVIRONMENT": "preview"
+        "ENVIRONMENT": "preview",
+        "EXPO_PUBLIC_API_URL": "http://82.29.178.228:5000/api"
       },
       "cache": {
         "disabled": false
@@ -27,7 +29,8 @@
     "production": {
       "autoIncrement": true,
       "env": {
-        "ENVIRONMENT": "production"
+        "ENVIRONMENT": "production",
+        "EXPO_PUBLIC_API_URL": "http://82.29.178.228:5000/api"
       },
       "cache": {
         "disabled": false

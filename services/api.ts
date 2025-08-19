@@ -2,6 +2,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000/api';
+// Debug which API URL is used at runtime
+console.log('[API] Base URL =', API_URL);
 
 export const apiClient = axios.create({
   baseURL: API_URL,
@@ -30,13 +32,13 @@ export const tokenManager = {
 apiClient.interceptors.request.use(
   async (config) => {
     console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
-    
+
     // Add auth token to requests
     const token = await tokenManager.getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
+
     return config;
   },
   (error) => {
@@ -51,14 +53,14 @@ apiClient.interceptors.response.use(
   },
   async (error) => {
     console.error('API Error:', error.response?.data || error.message);
-    
+
     // Handle auth errors
     if (error.response?.status === 401) {
       await tokenManager.removeToken();
       // You might want to redirect to login screen here
       // or dispatch a logout action
     }
-    
+
     return Promise.reject(error);
   }
 );

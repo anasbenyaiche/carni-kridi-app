@@ -5,6 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "cross-env EXPO_NO_TELEMETRY=1 expo start",
+    "dev:preview": "cross-env EXPO_PUBLIC_API_URL=http://82.29.178.228:5000/api EXPO_PUBLIC_ENVIRONMENT=preview EXPO_NO_TELEMETRY=1 expo start",
+    "dev:production": "cross-env EXPO_PUBLIC_API_URL=http://82.29.178.228:5000/api EXPO_PUBLIC_ENVIRONMENT=production EXPO_NO_TELEMETRY=1 expo start",
     "build:web": "expo export --platform web",
     "lint": "expo lint",
     "test": "echo \"No tests yet\" && exit 0",
@@ -27,7 +29,7 @@
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "dotenv": "^17.2.0",
-    "expo": "^53.0.20",
+    "expo": "^53.0.21",
     "expo-blur": "~14.1.5",
     "expo-camera": "~16.1.11",
     "expo-constants": "~17.1.3",
